@@ -15,6 +15,9 @@ PEAK_HEIGHT_THRESHOLD = 0.07 # Default: 0.07
 # Specify the polynomial degree
 DEGREE = 3
 
+# Specify the font size
+FONTSIZE = 16
+
 # Specify the enlarged plot sample size
 TIME_RANGE = 0.03 # Default: 0.1
 
@@ -25,6 +28,9 @@ TIME_RANGE = 0.03 # Default: 0.1
 
 runs = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'Control 1', 'Control 2', 'Control 3']
 plots = []
+
+# Set the font size for the plot
+plt.rcParams.update({'font.size': FONTSIZE})
 
 output_folder = "output_plots"
 os.makedirs(output_folder, exist_ok=True)  # Create the output folder if it doesn't exist
@@ -56,20 +62,30 @@ for run in runs:
     peak_times = run_data[f"Time (s) {run}"][peaks]
     peak_forces = run_data[f"Force (N) {run}"][peaks]
 
-    # Create a polynomial trendline using numpy.polyfit()
-    last_peak_index = peaks[-1]
-    coefficients = np.polyfit(peak_times[:last_peak_index+1], peak_forces[:last_peak_index+1], DEGREE)
-    trendline = np.polyval(coefficients, run_data[f"Time (s) {run}"].values)
+    # # Filter out NaN values from the force data
+    # valid_force_values = run_data[f"Force (N) {run}"].values
+    # valid_force_values = valid_force_values[~np.isnan(valid_force_values)]
     
-    # Get the equation of the polynomial
-    equation = np.poly1d(coefficients)
+    # # Filter out NaN values from the force data
+    # valid_force_values = run_data[f"Force (N) {run}"].values
+    # valid_force_values = valid_force_values[~np.isnan(valid_force_values)]
+    
+    # # Fit the exponential trendline using logarithmic transformation
+    # force_values_log = np.log(valid_force_values)
+    # coefficients = np.polyfit(run_data[f"Time (s) {run}"], force_values_log, DEGREE)
+    
+    # # Generate trendline values for the given time range
+    # trendline_time = np.linspace(run_data[f"Time (s) {run}"].min(), run_data[f"Time (s) {run}"].max(), len(run_data))
+    # trendline_log = np.polyval(coefficients, trendline_time)
+    # trendline = np.exp(trendline_log)
+    
+    # # Get the equation of the polynomial
+    # a = np.exp(coefficients[0])
+    # b = coefficients[1]
+    # equation = r"Trendline Equation: $y = {:.4f} \cdot e^{{ {:.4f} \cdot t }}$".format(a, b)
 
-    # Plot the trendline
-    plt.plot(run_data[f"Time (s) {run}"], trendline, color='red')
-
-    # Set the x-axis tick locations and labels
-    # x_ticks = np.arange(run_data[f"Time (s) {run}"].min(), run_data[f"Time (s) {run}"].max() + 1.008, 1.008)  # Adjust the interval as needed
-    # plt.xticks(x_ticks)
+    # # Plot the trendline
+    # plt.plot(run_data[f"Time (s) {run}"], trendline, color='red')
 
     # Calculate total impulse for each bump
     total_impulse = 0.0
@@ -85,18 +101,18 @@ for run in runs:
     rounded_impulse = round(total_impulse, 4)
 
     # Create the equation string with LaTeX formatting for superscripts
-    equation_parts = [f"{round(coefficients[i], 2)}t^{{{DEGREE-i}}}" for i in range(DEGREE+1)]
-    equation = r"Trendline Equation: $y = " + "+".join(equation_parts) + r"$"
+    # equation_parts = [f"{round(coefficients[i], 2)}t^{{{DEGREE-i}}}" for i in range(DEGREE+1)]
+    # equation = r"Trendline Equation: $y = " + "+".join(equation_parts) + r"$"
     impulse_text = f"Total Impulse: {rounded_impulse} Ns"
 
     # Add the equation and the total impulse to the graph
-    plt.text(0.95, 0.95, equation, color='red', transform=plt.gca().transAxes, fontsize=10, ha='right', va='top')
+    # plt.text(0.95, 0.95, equation, color='red', transform=plt.gca().transAxes, fontsize=10, ha='right', va='top')
     plt.text(0.95, 0.85, impulse_text, color='black', transform=plt.gca().transAxes, fontsize=10, ha='right', va='top')
     
     # Add plot to list of plots
     plots.append(plt)
 
-     # Create an enlarged plot of the first collision
+    # Create an enlarged plot of the first collision
     if len(peaks) > 0:
         first_collision_index = peaks[0]
         time_range = TIME_RANGE  # Adjust the time range here (in seconds)
@@ -125,7 +141,7 @@ for run in runs:
 
         # Add the impulse information to the plot
         impulse_text = f"Impulse: {rounded_impulse} Ns"
-        ax.text(0.95, 0.95, impulse_text, color='black', transform=ax.transAxes, fontsize=10, ha='right', va='top')
+        ax.text(0.95, 0.95, impulse_text, color='black', transform=ax.transAxes, fontsize=FONTSIZE, ha='right', va='top')
 
         # Save the enlarged plot as an image file
         output_file = os.path.join(output_folder, f"{run}_enlarged_plot.png")
@@ -145,6 +161,3 @@ for run in runs:
     
     print(f"Saved plot for {run} to {output_file}")
 
-# # Show all of the plots
-# for plt in plots:
-#     plt.show()
