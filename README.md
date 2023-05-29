@@ -31,7 +31,8 @@ xcode-select --install
 1. Clone this repository to your local machine. Do this with `git clone` or by downloading the ZIP file.
 2. Open a terminal window and navigate to the project directory.
 3. Rename the csv file from sparkvue to `Crumple Zone Data.csv` and place it in the project directory.
-4. Run the following command to start the program:
+4. In `sort.py`, change the `runs` list to have the names of all the runs. Do the same of `graph.py`.
+5. Run the following command to start the program:
 
 ```shell
 make all
