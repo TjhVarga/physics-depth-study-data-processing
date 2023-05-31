@@ -1,9 +1,14 @@
 import os
+import re
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
 from scipy.integrate import trapz
+# Assuming you have the CSV files for each run
+
+# File Names
+CSV_FILTERED = "Crumple Zone Data Filtered.csv"
 
 # Specify plot size
 HEIGHT = 6
@@ -24,10 +29,23 @@ TIME_RANGE = 0.03 # Default: 0.1
 # # Enable LaTeX rendering in matplotlib
 # plt.rcParams['text.usetex'] = True
 
-# Assuming you have the CSV files for each run
+# Extract the headers from the CSV file into a list
+def extract_run_names(file_path):
+    df = pd.read_csv(file_path)
+    headers = df.columns.tolist()
+    pattern = r'Force \(N\) (\w+\s?\d*)'
+    run_names = []
+    for header in headers:
+        match = re.search(pattern, header)
+        if match:
+            run_names.append(match.group(1))
+    return run_names
 
-runs = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'Control 1', 'Control 2', 'Control 3']
-plots = []
+# Define list
+runs=extract_run_names(CSV_FILTERED)
+
+# runs = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'Control 1', 'Control 2', 'Control 3']
+# plots = []
 
 # Set the font size for the plot
 plt.rcParams.update({'font.size': FONTSIZE})
@@ -110,7 +128,7 @@ for run in runs:
     plt.text(0.95, 0.85, impulse_text, color='black', transform=plt.gca().transAxes, fontsize=10, ha='right', va='top')
     
     # Add plot to list of plots
-    plots.append(plt)
+    # plots.append(plt)
 
     # Create an enlarged plot of the first collision
     if len(peaks) > 0:

@@ -1,10 +1,25 @@
 import pandas as pd
 import numpy as np
 import os
+import re
 
+CSV_FILTERED = "Crumple Zone Data Filtered.csv"
 df = pd.read_csv("Crumple Zone Data Filtered.csv")
 
-runs = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'Control 1', 'Control 2', 'Control 3']
+# Extract the headers from the CSV file into a list
+def extract_run_names(file_path):
+    df = pd.read_csv(file_path)
+    headers = df.columns.tolist()
+    pattern = r'Force \(N\) (\w+\s?\d*)'
+    run_names = []
+    for header in headers:
+        match = re.search(pattern, header)
+        if match:
+            run_names.append(match.group(1))
+    return run_names
+
+# Define list
+runs=extract_run_names(CSV_FILTERED)
 offset = {}  # Dictionary to store the offset for each run
 output_folder = "output_data"
 os.makedirs(output_folder, exist_ok=True)  # Create the output folder if it doesn't exist
