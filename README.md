@@ -5,15 +5,6 @@ This project analyzes crumple zone data obtained from different collision runs. 
 
 To run this project, you need to have Python (version 3.6 or higher) installed on your computer. If you don't have Python installed, you can download it from the official website: https://www.python.org/downloads/
 
-You will also need certain additional modules:
-You can install these dependencies by running the following command in terminal:
-
-```shell
-pip install pandas matplotlib numpy scipy
-```
-
-If you have both Python 2 and Python 3 installed, you may need to use `pip3` instead of `pip`.
-
 If you use MacOS, please install xcode command line tools by running this command first. This will take 1.2 GB of disk space.
 
 ```shell
@@ -31,6 +22,7 @@ xcode-select --install
 ```shell
 pip install pandas matplotlib numpy scipy
 ```
+If you have both Python 2 and Python 3 installed, you may need to use `pip3` instead of `pip`.
 7. In terminal, type in "cd " (without quotes) and drag the folder containing the code files into the terminal window. Press enter.
 8. In your file explorer, drag the SparkVue CSV file into the folder containing the code files. Rename the file to "Crumple Zone Data.csv".
 9. Back in terminal, type in the following command and press enter:
